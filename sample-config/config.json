@@ -1,0 +1,49 @@
+{
+    "enviroment": {
+        "host": "0.0.0.0",
+        "port": 5001,
+        "debug": true
+    },
+    "devices":[
+        {
+            "id": "raspberry",
+            "type": "linux",
+            "host": "ip",
+            "connection": "ssh",
+            "user": "user",
+            "password": "password",
+            "usb":[
+                {
+                    "id": "root",
+                    "label": "",
+                    "kname": "/dev/root",
+                    "mount_point": ""
+                },
+                {
+                    "id": "hdd_usb",
+                    "label": "HDD1TB",
+                    "kname": "",
+                    "mount_point": "/mnt/hdd"
+                }
+            ],
+            "smb":[
+                {
+                    "id": "pi_home",
+                    "path": "//ip/folder",
+                    "mount_point": "/mnt/smb",
+                    "user": "user",
+                    "password": "password",
+                    "permissions": "user"
+                }
+            ]
+        },
+        {
+            "id": "router1",
+            "type": "rut240",
+            "host": "ip",
+            "connection": "ssh",
+            "user": "user",
+            "password": "password"
+        }
+    ]
+}
