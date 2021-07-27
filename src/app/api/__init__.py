@@ -58,15 +58,15 @@ def api_exec():
 def controller(method, request):
     ## Validate if request exists
     if request is None:
-        return jsonify("Invalid request: None request"), 400
+        return jsonify("ERROR: None request"), 400
     # Validate device_id
     try:
         device_id = request["device_id"]
     except:
-        return jsonify("Invalid request: device_id not found"), 400
+        return jsonify("ERROR: device_id invalid"), 400
     # Get device config from json and continue
     device_config = get_device_config(device_id)
-    if device_config != "not_found":
+    if str(device_config).startswith("ERROR:") == False:
         # Prepare function header
         orig_method = method
         method = method + "_" + device_config["type"]
@@ -74,7 +74,7 @@ def controller(method, request):
         try:
             request["parameters"]
         except:
-            return jsonify("Invalid request: parameters not found"), 400
+            return jsonify("ERROR: parameters not found"), 400
         # Create context with parameters to return
         context = {}
         for parameter in request["parameters"]:
@@ -82,7 +82,7 @@ def controller(method, request):
             try:
                 parameter["parameter"]
             except:
-                return jsonify("Invalid request: invalid parameters scheme"), 400
+                return jsonify("ERROR: invalid parameters scheme"), 400
             try:
                 # Execute if parameters without sub-parameters
                 if len(parameter["parameter"].split(".")) == 1:
@@ -101,11 +101,11 @@ def controller(method, request):
             except Exception as e:
                 print("Error: " + str(e))
                 if "takes 1 positional argument" in str(e):
-                    context[parameter["parameter"]] = "invalid parameters"
+                    context[parameter["parameter"]] = "ERROR: invalid parameters"
                 elif "object has no attribute" in str(e):
-                    context[str(parameter["parameter"])] = "invalid parameter"
+                    context[str(parameter["parameter"])] = "ERROR: invalid parameter"
                 else:
-                    context[parameter["parameter"]] = "parameter does not exists"
+                    context[parameter["parameter"]] = "ERROR: parameter does not exists"
     else:
-        return jsonify("Invalid request: device_id not found"), 400
+        return jsonify(device_config), 400
     return jsonify(context)
