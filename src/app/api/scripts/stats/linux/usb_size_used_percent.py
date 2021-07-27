@@ -3,11 +3,10 @@ from .....common.config_controller import get_device_usb_config
 
 def stats_linux_usb_size_used_percent(device_config, parameter):
     usb_id = parameter.split(".")[1]
-    label = get_device_usb_config(device_config["id"], usb_id)
-    if label != "not_found":
-        label = get_device_usb_config(device_config["id"], usb_id)["label"]
-    else:
-        return "not_found"
+    usb_config = get_device_usb_config(device_config["id"], usb_id)
+    if str(usb_config).startswith("ERROR:"):
+        return usb_config
+    label = usb_config["label"]
     if label != "":
         result = run_bash("lsblk -o KNAME,LABEL | grep " + label, device_config)
     else:

@@ -54,7 +54,7 @@ def get_device_usb_config(device_id, usb_id):
     if str(device_config).startswith("ERROR:") == False:
         for usb_config in device_config["usb"]:
             if usb_id == usb_config["id"]:
-                return usb_config
+                return validate_usb_config(usb_config)
         return "ERROR: usb_id not found in device config"
     else:
         return device_config
@@ -64,7 +64,48 @@ def get_device_smb_config(device_id, smb_id):
     if str(device_config).startswith("ERROR:") == False:
         for smb_config in device_config["smb"]:
             if smb_id == smb_config["id"]:
-                return smb_config
+                return validate_smb_config(smb_config)
         return "ERROR: smb_id not found in device config"
     else:
         return device_config
+
+def validate_smb_config(smb_config):
+    try:
+        if smb_config["path"].strip() == "":
+            return "ERROR: empty path in smb_config"
+    except:
+        return "ERROR: no path in smb_config"
+    try:
+        if smb_config["mount_point"].strip() == "":
+            return "ERROR: empty mount_point in smb_config"
+    except:
+        return "ERROR: no moint_point in smb_config"
+    try:
+        if smb_config["user"].strip() == "":
+            return "ERROR: empty user in smb_config"
+    except:
+        return "ERROR: no user in smb_config"
+    try:
+        if smb_config["password"].strip() == "":
+            return "ERROR: empty password in smb_config"
+    except:
+        return "ERROR: no password in smb_config"
+    try:
+        if smb_config["permissions"].strip() == "":
+            smb_config["permissions"] = "default"
+    except:
+        smb_config["permissions"] = "default"
+    return smb_config
+
+def validate_usb_config(usb_config):
+    try:
+        if usb_config["label"].strip() == "" and usb_config["kname"].strip() == "":
+            return "ERROR: empty label and kname in usb_config"
+    except:
+        return "ERROR: no label and kname in usb_config"
+    try:
+        if usb_config["mount_point"].strip() == "":
+            return "ERROR: empty mount_point in usb_config"
+    except:
+        return "ERROR: no mount_point in usb_config"
+    return usb_config
